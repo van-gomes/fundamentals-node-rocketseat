@@ -6,8 +6,8 @@ Streams permitem **consumir, produzir e transformar dados em partes (_chunks_)**
 
 ```mermaid
 flowchart LR
-    A[Readable<br/>Produz chunks<br/>1, 2, 3...] -->|pipe| B[Transform<br/>Multiplica por -1<br/>-1, -2, -3...]
-    B -->|pipe| C[Writable<br/>Multiplica por 10 e exibe<br/>-10, -20, -30...]
+    A["Readable — Produz chunks — 1, 2, 3..."] -->|pipe| B["Transform — Multiplica por -1 — -1, -2, -3..."]
+    B -->|pipe| C["Writable — Multiplica por 10 e exibe — -10, -20, -30..."]
 ```
 
 Os dados avançam pelo fluxo à medida que ficam disponíveis. O `pipe()` conecta as streams e ajuda a gerenciar o _backpressure_ (quando a etapa consumidora é mais lenta que a produtora).
@@ -16,11 +16,11 @@ Os dados avançam pelo fluxo à medida que ficam disponíveis. O `pipe()` conect
 
 ```mermaid
 flowchart LR
-    A[_read()] --> B[Gerar próximo número]
+    A["_read()"] --> B[Gerar próximo número]
     B --> C[Buffer.from String i]
     C --> D[push buffer]
     D --> E[process.stdout]
-    B -->|Após 100| F[push null<br/>Fim da stream]
+    B -->|Após 100| F["push(null) — Fim da stream"]
 ```
 
 A classe `OneToHundredStream` estende `Readable`. O método `_read()` produz números de 1 a 100, com intervalo de um segundo. `push(buffer)` entrega um chunk; `push(null)` indica o fim da leitura.
@@ -37,10 +37,10 @@ node src/streams/readableStream.js
 
 ```mermaid
 flowchart LR
-    A[Readable<br/>1, 2, 3...] -->|pipe| B[_write chunk, encoding, callback]
+    A["Readable — 1, 2, 3..."] -->|pipe| B["_write(chunk, encoding, callback)"]
     B --> C[Converter Buffer em número]
     C --> D[Multiplicar por 10]
-    D --> E[console.log<br/>10, 20, 30...]
+    D --> E["console.log — 10, 20, 30..."]
     E --> F[callback]
 ```
 
@@ -56,9 +56,9 @@ node src/streams/writableStream.js
 
 ```mermaid
 flowchart LR
-    A[Readable<br/>1, 2, 3...] -->|pipe| B[InverseNumberStream<br/>_transform<br/>Multiplica por -1]
-    B -->|pipe| C[MultiplyByTenStream<br/>_write<br/>Multiplica por 10]
-    C --> D[Terminal<br/>-10, -20, -30...]
+    A["Readable — 1, 2, 3..."] -->|pipe| B["InverseNumberStream — _transform — Multiplica por -1"]
+    B -->|pipe| C["MultiplyByTenStream — _write — Multiplica por 10"]
+    C --> D["Terminal — -10, -20, -30..."]
 ```
 
 A classe `InverseNumberStream` estende `Transform`. O método `_transform(chunk, encoding, callback)` recebe o chunk, converte o número em seu oposto e chama `callback(null, Buffer.from(String(transformed)))`. O primeiro argumento (`null`) indica ausência de erro; o segundo é o novo chunk a ser encaminhado.
